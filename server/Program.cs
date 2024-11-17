@@ -1,36 +1,21 @@
-using backend.Services;
-
+// builder
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
-builder.Services.AddSingleton<TodoService>();
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+List todos = new List<String>();
 
-// CORS Configuration (Optional but recommended for React frontend)
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy
-            .WithOrigins("http://localhost:3000") // Adjust the URL if your React app is hosted elsewhere
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
-
+// The app itself
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// POST req to create one todo
+app.MapPost(
+    "/todos",
+    (data) =>
+    {
+        todos.Add(data);
+        return "success";
+    }
+);
 
-app.UseHttpsRedirection();
-app.UseCors();
+app.MapGet("/todos", () => { });
 
-app.MapControllers();
 app.Run();
